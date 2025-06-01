@@ -1,0 +1,118 @@
+{
+    "cars": {
+        "1": {
+            "id": 1,
+            "name": "BMW 320d",
+            "price": 25000,
+            "type": "sport",
+            "fuel": "diesel",
+            "market": "german",
+            "age": "modern",
+            "image": "https://www.bmw-m.com/content/dam/bmw/marketBMW_M/www_bmw-m_com/topics/magazine-article-pool/2020/m3-e90-portraet/bmw-m3-e90-ai-01.jpg",
+            "year": 2006,
+            "power": "177 KM",
+            "consumption": "5.2 L/100km"
+        },
+        "2": {
+            "id": 2,
+            "name": "Volkswagen Golf",
+            "price": 18000,
+            "type": "spacious",
+            "fuel": "petrol",
+            "market": "german",
+            "age": "modern",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/e/e8/VW_Golf_II_front_20080206.jpg",
+            "year": 1999,
+            "power": "70 KM",
+            "consumption": "6.1 L/100km"
+        },
+        "3": {
+            "id": 3,
+            "name": "Toyota Avensis",
+            "price": 15000,
+            "type": "spacious",
+            "fuel": "hybrid",
+            "market": "slovenian",
+            "age": "older",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Toyota_Avensis_front_20090814.jpg/1200px-Toyota_Avensis_front_20090814.jpg",
+            "year": 2016,
+            "power": "140 KM",
+            "consumption": "4.8 L/100km"
+        },
+        "4": {
+            "id": 4,
+            "name": "Audi A4",
+            "price": 35000,
+            "type": "sport",
+            "fuel": "petrol",
+            "market": "german",
+            "age": "modern",
+            "image": "https://live.staticflickr.com/2288/2243181873_1a18a912fd_b.jpg",
+            "year": 2010,
+            "power": "245 KM",
+            "consumption": "7.2 L/100km"
+        },
+        "5": {
+            "id": 5,
+            "name": "\u0139\u00a0koda Octavia",
+            "price": 22000,
+            "type": "spacious",
+            "fuel": "diesel",
+            "market": "slovenian",
+            "age": "modern",
+            "image": "https://netcarflix.sfo2.cdn.digitaloceanspaces.com/0000/v3/Skoda/65cc90ced04d0c9b38775920/2025-octavia-skoda-fl65ai0odmmzfevfaf.jpeg",
+            "year": 2020,
+            "power": "150 KM",
+            "consumption": "4.9 L/100km"
+        },
+        "6": {
+            "id": 6,
+            "name": "Opel Combo Life",
+            "price": 500000,
+            "type": "spacious",
+            "fuel": "petrol",
+            "market": "slovenian",
+            "age": "modern",
+            "image": "https://siol.net/media/img/9d/29/c2ca610179edf2f71715-opel-combo.jpeg",
+            "year": 2020,
+            "power": "150 KM",
+            "consumption": "4.9 L/100km"
+        },
+        "7": {
+            "id": 7,
+            "name": "Renault megane 3",
+            "price": 3000,
+            "type": "sport",
+            "fuel": "petrol",
+            "market": "slovenian",
+            "age": "modern",
+            "image": "https://scdn.autodoc.de/vehicles/800x287/15189.jpg",
+            "year": 2012,
+            "power": "150 KM",
+            "consumption": "4.9 L/100km"
+        }
+    },
+    "users": {
+        "1": {
+            "username": "nvd",
+            "password": "43d5082861bdc6a96e6413973615dece4d1a798b466f9484598ac2c713644a61",
+            "is_admin": false
+        },
+        "2": {
+            "username": "feestix",
+            "password": "4df3c3f68fcc83b27e9d42c90431a72499f17875c81a599b566c9889b9696703",
+            "is_admin": false
+        },
+        "3": {
+            "username": "feestix12213123",
+            "password": "6edc0270bdcc1c737f2ba1726b519823326dcd23e110991601c3da1467901bbe",
+            "is_admin": false
+        },
+        "4": {
+            "username": "adm",
+            "password": "86f65e28a754e1a71b2df9403615a6c436c32c42a75a10d02813961b86f1e428",
+            "is_admin": true
+        }
+    },
+    "comments": {}
+}

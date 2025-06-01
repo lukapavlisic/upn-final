@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ car.name }} - AutoFinder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="nav">
+            <div class="logo">
+                <h1><a href="{{ url_for('index') }}">AutoFinder</a></h1>
+            </div>
+            <div class="auth-buttons">
+                {% if session.user_id %}
+                    <span>Pozdravljen, {{ session.user_id }}!</span>
+                    {% if session.is_admin %}
+                        <span class="admin-badge">ADMIN</span>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline">Odjavi se</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline">Prijavi se</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary">Registriraj se</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="car-detail">
+            <div class="car-detail-header">
+                <a href="javascript:history.back()" class="btn btn-outline">← Nazaj</a>
+                <h2>{{ car.name }}</h2>
+            </div>
+
+            <div class="car-detail-content">
+                <div class="car-detail-left">
+                    <img src="{{ car.image }}" alt="{{ car.name }}" class="car-detail-image">
+                    
+                    <div class="car-specs">
+                        <h3>Specifikacije</h3>
+                        <div class="spec-grid">
+                            <div class="spec-item">
+                                <strong>Cena:</strong> {{ "{:,}".format(car.price) }} €
+                            </div>
+                            <div class="spec-item">
+                                <strong>Leto:</strong> {{ car.year }}
+                            </div>
+                            <div class="spec-item">
+                                <strong>Moč:</strong> {{ car.power }}
+                            </div>
+                            <div class="spec-item">
+                                <strong>Poraba:</strong> {{ car.consumption }}
+                            </div>
+                            <div class="spec-item">
+                                <strong>Gorivo:</strong> {{ car.fuel|title }}
+                            </div>
+                            <div class="spec-item">
+                                <strong>Tip:</strong> {{ car.type|title }}
+                            </div>
+                            <div class="spec-item">
+                                <strong>Trg:</strong> {{ car.market|title }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="car-detail-right">
+                    <div class="rating-section">
+                        <h3>Ocene in komentarji</h3>
+                        {% if avg_rating > 0 %}
+                            <div class="avg-rating">
+                                <span class="stars">
+                                    {% for i in range(1, 6) %}
+                                        {% if i <= avg_rating %}
+                                            ★
+                                        {% else %}
+                                            ☆
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <span class="rating-text">{{ avg_rating }}/5 ({{ comments|length }} ocen)</span>
+                            </div>
+                        {% endif %}
+
+                        {% if session.user_id %}
+                            <div class="add-comment">
+                                <h4>Dodaj oceno in komentar</h4>
+                                <div class="rating-input">
+                                    <label>Ocena:</label>
+                                    <div class="star-rating" id="star-rating">
+                                        <span class="star" data-rating="1">☆</span>
+                                        <span class="star" data-rating="2">☆</span>
+                                        <span class="star" data-rating="3">☆</span>
+                                        <span class="star" data-rating="4">☆</span>
+                                        <span class="star" data-rating="5">☆</span>
+                                    </div>
+                                </div>
+                                <textarea id="comment-text" placeholder="Vaš komentar..." rows="4"></textarea>
+                                <button onclick="submitComment()" class="btn btn-primary">Objavi komentar</button>
+                            </div>
+                        {% else %}
+                            <div class="login-prompt">
+                                <p>Za ocenjevanje in komentiranje se morate <a href="{{ url_for('login') }}">prijaviti</a>.</p>
+                            </div>
+                        {% endif %}
+
+                        <div class="comments-list" id="comments-list">
+                            {% for comment in comments %}
+                                <div class="comment" data-comment-id="{{ comment.doc_id }}">
+                                    <div class="comment-header">
+                                        <strong>{{ comment.user }}</strong>
+                                        <div class="comment-rating">
+                                            {% for i in range(1, 6) %}
+                                                {% if i <= comment.rating %}
+                                                    ★
+                                                {% else %}
+                                                    ☆
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        {% if session.is_admin %}
+                                            <button onclick="deleteComment({{ comment.doc_id }})" class="delete-btn">×</button>
+                                        {% endif %}
+                                    </div>
+                                    <p>{{ comment.comment }}</p>
+                                    <small>{{ comment.timestamp[:10] }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-placeholder">
+            <img src="{{ url_for('static', filename='image.png') }}" alt="Oglas" width="1000px" height="100px">
+        </div>
+    </div>
+
+    <script>
+        let selectedRating = 0;
+
+        // Star rating functionality
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                updateStarDisplay();
+            });
+
+            star.addEventListener('mouseover', function() {
+                const rating = parseInt(this.dataset.rating);
+                highlightStars(rating);
+            });
+        });
+
+        document.getElementById('star-rating').addEventListener('mouseleave', function() {
+            updateStarDisplay();
+        });
+
+        function highlightStars(rating) {
+            document.querySelectorAll('.star').forEach((star, index) => {
+                if (index < rating) {
+                    star.textContent = '★';
+                    star.classList.add('active');
+                } else {
+                    star.textContent = '☆';
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function updateStarDisplay() {
+            highlightStars(selectedRating);
+        }
+
+        function submitComment() {
+            if (!selectedRating) {
+                alert('Prosimo, izberite oceno!');
+                return;
+            }
+
+            const commentText = document.getElementById('comment-text').value.trim();
+            if (!commentText) {
+                alert('Prosimo, vnesite komentar!');
+                return;
+            }
+
+            fetch('/add_comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    car_id: {{ car.id }},
+                    rating: selectedRating,
+                    comment: commentText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    addCommentToList(data);
+                    document.getElementById('comment-text').value = '';
+                    selectedRating = 0;
+                    updateStarDisplay();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Napaka pri dodajanju komentarja!');
+            });
+        }
+
+        function addCommentToList(comment) {
+            const commentsList = document.getElementById('comments-list');
+            const stars = '★'.repeat(comment.rating) + '☆'.repeat(5 - comment.rating);
+            
+            const commentHtml = `
+                <div class="comment" data-comment-id="${comment.id}">
+                    <div class="comment-header">
+                        <strong>${comment.user}</strong>
+                        <div class="comment-rating">${stars}</div>
+                        {% if session.is_admin %}
+                            <button onclick="deleteComment(${comment.id})" class="delete-btn">×</button>
+                        {% endif %}
+                    </div>
+                    <p>${comment.comment}</p>
+                    <small>${comment.timestamp.split('T')[0]}</small>
+                </div>
+            `;
+            
+            commentsList.insertAdjacentHTML('afterbegin', commentHtml);
+        }
+
+        function deleteComment(commentId) {
+            if (!confirm('Ali ste prepričani, da želite izbrisati ta komentar?')) {
+                return;
+            }
+
+            fetch('/delete_comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    comment_id: commentId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector(`[data-comment-id="${commentId}"]`).remove();
+                } else {
+                    alert(data.error || 'Napaka pri brisanju komentarja!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Napaka pri brisanju komentarja!');
+            });
+        }
+    </script>
+</body>
+</html>

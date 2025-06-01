@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iskanje Avtomobilov</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="nav">
+            <div class="logo">
+                <h1>AutoFinder</h1>
+            </div>
+            <div class="auth-buttons">
+                {% if session.user_id %}
+                    <span>Pozdravljen, {{ session.user_id }}!</span>
+                    {% if session.is_admin %}
+                        <span class="admin-badge">ADMIN</span>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline">Odjavi se</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline">Prijavi se</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary">Registriraj se</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="search-form">
+            <h2>Poiščite svoj popoln avtomobil</h2>
+            
+            <form method="POST" action="{{ url_for('search') }}">
+                <div class="form-group">
+                    <label for="budget">Proračun (€):</label>
+                    <select name="budget" id="budget" onchange="toggleCustomBudget()">
+                        <option value="any">Vseeno</option>
+                        <option value="15000">Do 15.000€</option>
+                        <option value="25000">Do 25.000€</option>
+                        <option value="35000">Do 35.000€</option>
+                        <option value="50000">Do 50.000€</option>
+                        <option value="custom">Vnesi svoj proračun</option>
+                    </select>
+                    <input type="number" name="custom_budget" id="custom_budget" placeholder="Vnesi znesek" style="display: none; margin-top: 10px;">
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Tip avtomobila:</label>
+                    <select name="type" id="type">
+                        <option value="any">Vseeno</option>
+                        <option value="sport">Športen</option>
+                        <option value="spacious">Prostoren</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fuel">Gorivo:</label>
+                    <select name="fuel" id="fuel">
+                        <option value="any">Vseeno</option>
+                        <option value="petrol">Bencin</option>
+                        <option value="diesel">Diesel</option>
+                        <option value="hybrid">Hibrid</option>
+                        <option value="electric">Elektrika</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="market">Trg:</label>
+                    <select name="market" id="market">
+                        <option value="any">Vseeno</option>
+                        <option value="german">Nemški trg</option>
+                        <option value="slovenian">Slovenski trg</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Starost:</label>
+                    <select name="age" id="age">
+                        <option value="any">Vseeno</option>
+                        <option value="modern">Moderen (2018+)</option>
+                        <option value="older">Starejši (pred 2018)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">Poišči avtomobile</button>
+            </form>
+        </div>
+
+        <div class="ad-placeholder">
+            <img src="{{ url_for('static', filename='image.png') }}" alt="Oglas" width="1000px" height="100px">
+        </div>
+    </div>
+
+    <script>
+        function toggleCustomBudget() {
+            const budgetSelect = document.getElementById('budget');
+            const customBudget = document.getElementById('custom_budget');
+            
+            if (budgetSelect.value === 'custom') {
+                customBudget.style.display = 'block';
+                customBudget.required = true;
+            } else {
+                customBudget.style.display = 'none';
+                customBudget.required = false;
+            }
+        }
+    </script>
+</body>
+</html>

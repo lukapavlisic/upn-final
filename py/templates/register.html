@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registracija - AutoFinder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="nav">
+            <div class="logo">
+                <h1><a href="{{ url_for('index') }}">AutoFinder</a></h1>
+            </div>
+            <div class="auth-buttons">
+                <a href="{{ url_for('login') }}" class="btn btn-outline">Prijavi se</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="auth-form">
+            <h2>Registracija</h2>
+            
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="form-group">
+                    <label for="username">Uporabniško ime:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Geslo:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="admin_key">Admin ključ (neobvezno):</label>
+                    <input type="password" id="admin_key" name="admin_key" placeholder="Samo za administratorje">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">Registriraj se</button>
+            </form>
+
+            <p class="auth-link">
+                Že imate račun? <a href="{{ url_for('login') }}">Prijavite se</a>
+            </p>
+        </div>
+
+        <div class="ad-placeholder">
+            <img src="{{ url_for('static', filename='image.png') }}" alt="Oglas" width="1000px" height="100px">
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% for car in cars %}
+    <div class="car-card">
+        <img src="{{ car.image }}" alt="{{ car.name }}" class="car-image" loading="lazy">
+        <div class="car-info">
+            <h3>{{ car.name }}</h3>
+            <p class="price">{{ "{:,}".format(car.price) }} €</p>
+            <div class="car-details">
+                <span class="detail-badge">{{ car.year }}</span>
+                <span class="detail-badge">{{ car.fuel|title }}</span>
+                <span class="detail-badge">{{ car.type|title }}</span>
+            </div>
+            <a href="{{ url_for('car_detail', car_id=car.id) }}" class="btn btn-primary">Več podrobnosti</a>
+        </div>
+    </div>
+{% endfor %}

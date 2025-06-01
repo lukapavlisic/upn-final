@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezultati iskanja - AutoFinder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="nav">
+            <div class="logo">
+                <h1><a href="{{ url_for('index') }}">AutoFinder</a></h1>
+            </div>
+            <div class="auth-buttons">
+                {% if session.user_id %}
+                    <span>Pozdravljen, {{ session.user_id }}!</span>
+                    {% if session.is_admin %}
+                        <span class="admin-badge">ADMIN</span>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline">Odjavi se</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline">Prijavi se</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary">Registriraj se</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="results-header">
+            <h2>Rezultati iskanja</h2>
+            <a href="{{ url_for('index') }}" class="btn btn-outline">Novo iskanje</a>
+            <button id="remove-filters" class="btn btn-primary">Odstrani filtre</button>
+        </div>
+
+
+        {% if cars %}
+            <div class="cars-grid">
+                {% for car in cars %}
+                    <div class="car-card">
+                        <img src="{{ car.image }}" alt="{{ car.name }}" class="car-image" loading="lazy">
+                        <div class="car-info">
+                            <h3>{{ car.name }}</h3>
+                            <p class="price">{{ "{:,}".format(car.price) }} €</p>
+                            <div class="car-details">
+                                <span class="detail-badge">{{ car.year }}</span>
+                                <span class="detail-badge">{{ car.fuel|title }}</span>
+                                <span class="detail-badge">{{ car.type|title }}</span>
+                            </div>
+                            <a href="{{ url_for('car_detail', car_id=car.id) }}" class="btn btn-primary">Več podrobnosti</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-results">
+                <h3>Žal ni avtomobilov, ki bi ustrezali vašim kriterijem</h3>
+                <p>Poskusite z drugačnimi filtri ali povečajte proračun.</p>
+            </div>
+        {% endif %}
+    </div>
+    <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const btn = document.getElementById('remove-filters');
+    if (btn) {
+      btn.addEventListener('click', function () {
+        fetch('/vsi-avti')
+          .then(response => response.text())
+          .then(data => {
+            const grid = document.querySelector('.cars-grid');
+            if (grid) {
+              grid.innerHTML = data;
+            }
+          })
+          .catch(error => {
+            console.error('Napaka pri nalaganju avtomobilov:', error);
+          });
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
